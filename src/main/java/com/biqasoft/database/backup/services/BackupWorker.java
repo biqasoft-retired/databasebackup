@@ -6,6 +6,7 @@ import com.biqasoft.entity.constants.TOKEN_TYPES;
 import com.biqasoft.entity.core.CreatedInfo;
 import com.biqasoft.entity.core.Domain;
 import com.biqasoft.entity.core.useraccount.UserAccount;
+import com.biqasoft.microservice.database.MainDatabase;
 import com.biqasoft.microservice.database.MongoTenantHelper;
 import com.biqasoft.persistence.base.BiqaObjectFilterService;
 import com.biqasoft.storage.DefaultStorageService;
@@ -69,6 +70,8 @@ public class BackupWorker {
     private Boolean uploadToUserStorage;
     private volatile Integer maxBackupThreads;
 
+    private final MongoOperations mainDatabase;
+
     /**
      *
      * @param databaseServiceName
@@ -105,6 +108,7 @@ public class BackupWorker {
                         ConsulClient consulClient,
                         BiqaObjectFilterService biqaObjectFilterService,
                         MongoTenantHelper mongoTenantHelper,
+                        @MainDatabase MongoOperations mainDatabase,
                         IQueue<BackupDomain> queue) {
 
         this.uploadToUserStorage = uploadToUserStorage;
@@ -125,6 +129,8 @@ public class BackupWorker {
         this.queue = queue;
         this.maxBackupThreads = getMaxThreadNumber(maxBackupThreadsSpellExpression);
         logger.info("maxBackupThreads {}", this.maxBackupThreads);
+
+        this.mainDatabase = mainDatabase;
 
         this.threadPoolExecutor = new ScheduledThreadPoolExecutor(this.maxBackupThreads);
         startQueueWatcherThread();
@@ -269,6 +275,16 @@ public class BackupWorker {
 
         repository.uploadFile(file, documentFile, userAccount, domain1);
         mongoOperations.save(documentFile);
+
+        backupMetaInfoToInternalStorage(documentFile);
+    }
+
+    private void backupMetaInfoToInternalStorage(StorageFile documentFile) {
+        BackupEntry backupEntry = new BackupEntry();
+        backupEntry.setStorageFile(documentFile);
+        backupEntry.setDate(new Date());
+
+        mainDatabase.insert(backupEntry);
     }
 
     private Response<List<CatalogService>> getMongoConfiguration() {

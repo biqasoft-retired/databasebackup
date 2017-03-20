@@ -9,20 +9,18 @@
 package com.biqasoft.database.backup.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Nikita Bakaev, ya@nbakaev.ru
- * Date: 10/5/2015
- * All Rights Reserved
+ *         Date: 10/5/2015
+ *         All Rights Reserved
  */
-@Controller
-@RequestMapping("/backup")
+@RestController
+@RequestMapping("/v1/backup")
 public class BackupController {
 
     private BackupService mongoConfiguration;
@@ -33,12 +31,17 @@ public class BackupController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public void backup(HttpServletResponse response) throws Exception {
+    public void backup() {
         mongoConfiguration.backup();
     }
 
+    @RequestMapping(value = "consul")
+    public void backupDomainById() {
+        mongoConfiguration.backupConsul();
+    }
+
     @RequestMapping(value = "id/{id}")
-    public void backupDomainById(@PathVariable("id") String id) throws Exception {
+    public void backupDomainById(@PathVariable("id") String id) {
         mongoConfiguration.backupDomain(id);
     }
 

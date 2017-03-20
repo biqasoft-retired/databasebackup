@@ -29,8 +29,7 @@ public class ScheduledTasksService {
         this.backupService = backupService;
     }
 
-    // http://stackoverflow.com/questions/26147044/spring-cron-expression-for-every-day-101am
-    @Scheduled(cron = "0 0 0,12 * * *")
+    @Scheduled(cron = "${biqa.backup.interval}")
     public void scheduledLeadGen (){
         logger.debug("START: Scheduled backup");
         backupService.backup();
