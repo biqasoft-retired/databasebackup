@@ -59,7 +59,7 @@ public class BackupWorker {
 
     private static final Logger logger = LoggerFactory.getLogger(BackupService.class);
 
-    private String outputPath;
+    private final String outputPath;
     private String dateFormat;
     private BiqaObjectFilterService biqaObjectFilterService;
 
@@ -196,11 +196,11 @@ public class BackupWorker {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
         String dateAsString = formatter.format(now);
 
-        outputPath += File.separator + dateAsString;
+        String tempOutputPath = outputPath + File.separator + dateAsString;
 
 //        example of executed cmd
 //        mongodump --host mongodb1.example.net --port 3017 --username user --password pass --out /opt/backup/mongodump-2013-10-24
-        ProcessBuilder pb = new ProcessBuilder("mongodump", "--host", host, "--port", port, "--username", userName, "--password", password, "--out", outputPath
+        ProcessBuilder pb = new ProcessBuilder("mongodump", "--host", host, "--port", port, "--username", userName, "--password", password, "--out", tempOutputPath
                 , "--db", domain.getDomain(), "--authenticationDatabase", "admin");
         pb.inheritIO();
         logger.info("Start backup mongodb {}", domain.getDomain());
@@ -215,9 +215,9 @@ public class BackupWorker {
         logger.info("End backup mongodb {}", domain.getDomain());
 
         String zipFileName = null;
-        String sourceDirPath = outputPath + File.separator + domain.getDomain();
+        String sourceDirPath = tempOutputPath + File.separator + domain.getDomain();
         try {
-            zipFileName = outputPath + File.separator + domain.getDomain() + ".zip";
+            zipFileName = tempOutputPath + File.separator + domain.getDomain() + ".zip";
             ZipUtils.pack(sourceDirPath, zipFileName);
         } catch (Exception e) {
             logger.error("can not zip mongodb database {}", domain.getDomain(), e);

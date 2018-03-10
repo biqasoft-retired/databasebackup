@@ -14,11 +14,11 @@
     </parent>
 
     <dependencies>
-        <!--<dependency>-->
-            <!--<groupId>com.biqasoft</groupId>-->
-            <!--<artifactId>microservice</artifactId>-->
-            <!--<version>${biqa.infrastructure-version}</version>-->
-        <!--</dependency>-->
+        <dependency>
+            <groupId>com.biqasoft</groupId>
+            <artifactId>microservice</artifactId>
+            <version>${biqa.infrastructure-version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.hazelcast</groupId>
