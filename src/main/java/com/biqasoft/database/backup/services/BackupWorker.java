@@ -5,7 +5,7 @@ import com.biqasoft.database.backup.distributedstorage.ZipUtils;
 import com.biqasoft.entity.constants.TOKEN_TYPES;
 import com.biqasoft.entity.core.CreatedInfo;
 import com.biqasoft.entity.core.Domain;
-import com.biqasoft.entity.core.useraccount.UserAccount;
+import com.biqasoft.users.domain.useraccount.UserAccount;
 import com.biqasoft.microservice.database.MainDatabase;
 import com.biqasoft.microservice.database.MongoTenantHelper;
 import com.biqasoft.persistence.base.BiqaObjectFilterService;
